@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>My notes</h1>
+        {% if notes %}
+            <ul class="notes-list">
+                {% for note in notes %}
+                    <li class="note-item">
+                        <h2>{{ note.title }}</h2>
+                        <p>{{ note.content }}</p>
+                        <small>Created: {{ note.created_at }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No notes so far.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
