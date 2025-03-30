@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ note.title }}</title>
+</head>
+<body>
+    <h1>{{ note.title }}</h1>
+    <p>{{ note.text }}</p>
+    <p>Нагадування: {{ note.reminder|date:"Y-m-d H:i" }}</p>
+    <p>Категорія: {{ note.category }}</p>
+
+    <h2>Редагувати нотатку</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зберегти</button>
+    </form>
+
+    <a href="{% url 'delete_note' note.pk %}">Видалити нотатку</a>
+    <br>
+    <a href="{% url 'note_list' %}">Назад до списку</a>
+</body>
+</html>
