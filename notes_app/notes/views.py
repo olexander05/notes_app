@@ -3,7 +3,7 @@ from django.views import View
 from .models import Note, Category
 from .forms import NoteForm
 from django.db.models import Q
-
+from django.http import JsonResponse
 
 class CreateNoteView(View):
     def get(self, request):
@@ -13,10 +13,9 @@ class CreateNoteView(View):
     def post(self, request):
         form = NoteForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('note_list')
+            note = form.save()
+            return JsonResponse({'id': note.id}, status=201)
         return render(request, 'notes/create_note.html', {'form': form})
-
 
 
 def note_list(request):
@@ -25,26 +24,23 @@ def note_list(request):
 
 
 class NoteDetailView(View):
-    def get(self, request, pk):
+    def put(self, request, pk):
         note = get_object_or_404(Note, pk=pk)
-        form = NoteForm(instance=note)
-        return render(request, 'notes/note_detail.html', {'note': note, 'form': form})
-
-    def post(self, request, pk):
-        note = get_object_or_404(Note, pk=pk)
-        form = NoteForm(request.POST, instance=note)
+        form = NoteForm(request.PUT, instance=note)
         if form.is_valid():
             form.save()
-            return redirect('note_list')
-        return render(request, 'notes/note_detail.html', {'note': note, 'form': form})
+            return JsonResponse({'id': note.id}, status=200)
+        return JsonResponse({'errors': form.errors}, status=400)
+
+
 
 
 
 def delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         note.delete()
-        return redirect('note_list')
+        return JsonResponse(status=204)
     return render(request, 'notes/delete_note.html', {'note': note})
 
 
